@@ -1,6 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 
 import { generateSlug } from '@/lib/utils/slug'
 import { createClient } from '@/lib/supabase/server'
@@ -84,4 +85,18 @@ export async function createEvent(formData: FormData): Promise<ActionResult> {
   }
 
   redirect(`/events/${event.slug}`)
+}
+
+export async function deleteEvent(eventId: string): Promise<ActionResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { error: 'Unauthorized' }
+
+  const { error } = await supabase.from('events').delete().eq('id', eventId).eq('host_id', user.id)
+
+  if (error) return { error: 'Failed to delete event' }
+
+  revalidatePath('/dashboard')
 }

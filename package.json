@@ -17,7 +17,8 @@
     "test:e2e": "playwright test",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
-    "db:diff": "supabase db diff"
+    "db:diff": "supabase db diff",
+    "db:types": "supabase gen types typescript --local > src/types/supabase.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
