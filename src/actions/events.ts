@@ -58,15 +58,13 @@ export async function createEvent(formData: FormData): Promise<ActionResult> {
     p_host_id: user.id,
     p_title: title,
     p_description: description ?? null,
-    P_date: eventDate.toISOString(),
+    p_date: eventDate.toISOString(),
     p_location: location ?? null,
     p_slug: slug,
     p_cover_url: coverUrl,
     p_items:
       items && items.length > 0
-        ? JSON.stringify(
-            items.map((item) => ({ name: item.name, estimated_cost: item.estimated_cost ?? null }))
-          )
+        ? items.map((item) => ({ name: item.name, estimated_cost: item.estimated_cost ?? null }))
         : '[]',
   })
 
