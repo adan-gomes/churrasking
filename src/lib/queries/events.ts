@@ -105,3 +105,35 @@ export async function getEventBySlug(supabase: SupabaseClient<Database>, slug: s
     ...summaryResult.data,
   }
 }
+
+export async function getPublicEventBySlug(supabase: SupabaseClient<Database>, slug: string) {
+  const { data, error } = await supabase
+    .from('events')
+    .select(
+      `
+      id,
+      title,
+      date,
+      location,
+      cover_url,
+      slug,
+      profiles (
+        name
+      ),
+      guests (
+        id,
+        name,
+        rsvp_status
+      )
+    `
+    )
+    .eq('slug', slug)
+    .single()
+
+  if (error) {
+    console.error('getPublicEventBySlug error:', error.message)
+    return null
+  }
+
+  return data
+}
