@@ -155,6 +155,8 @@
     }
   },
   "Common": {
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
     "mascotAlt": "BBQ King mascot",
     "optional": "(optional)",
     "back": "Back",

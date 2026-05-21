@@ -159,6 +159,8 @@
     "message": "Parece que você está sem internet. Reconecte-se para acessar seus churrascos."
   },
   "Common": {
+    "darkMode": "Tema escuro",
+    "lightMode": "Tema claro",
     "mascotAlt": "ChurrasKing mascote",
     "optional": "(opcional)",
     "back": "Voltar",
