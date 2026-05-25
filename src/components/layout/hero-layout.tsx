@@ -11,7 +11,7 @@ export function HeroLayout({ hero, children, coverUrl }: HeroLayoutProps) {
     <main className="flex flex-col">
       <div className="relative bg-primary-foreground w-full">
         {coverUrl && (
-          <Image src={'/mascot.png'} alt="" fill sizes="100vw" className="object-cover" priority />
+          <Image src={coverUrl} alt="" fill sizes="100vw" className="object-cover" priority />
         )}
         {coverUrl && <div className="absolute inset-0 bg-black/90" />}
         <div className="relative container mx-auto px-6 py-8">{hero}</div>
