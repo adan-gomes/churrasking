@@ -38,7 +38,7 @@
     "@serwist/precaching": "^9.5.11",
     "@serwist/sw": "^9.5.11",
     "@supabase/ssr": "^0.10.3",
-    "@supabase/supabase-js": "^2.105.4",
+    "@supabase/supabase-js": "^2.106.2",
     "@tanstack/react-query": "^5.100.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
