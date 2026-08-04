@@ -8,20 +8,9 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-<!--
-  PENDENTE — os dois itens de maior impacto para quem avalia este repo:
+<img src="docs/demo.gif" alt="Host creates an event, adds items and shares the link; a guest opens it, confirms attendance and claims an item; the host view updates with the guest list and the per-person cost" width="860" />
 
-  1. LINK DA DEMO. Um recrutador quer clicar e ver funcionando, não clonar.
-     Se estiver no ar, adicionar aqui:
-     **[Ver demo ao vivo →](https://SUA-URL)**
-
-  2. SCREENSHOTS ou um GIF do fluxo (criar evento → compartilhar link →
-     convidado confirma → item reivindicado). Projeto de UI sem imagem
-     obriga o avaliador a imaginar, e ele não vai.
-
-  Deixados como comentário de propósito: link quebrado ou imagem faltando
-  num README público é pior que a ausência da seção.
--->
+<sub>Create the event → add items → share one link → guests RSVP and claim what they'll bring → the per-person split updates. Recorded end to end against a local stack by <a href="scripts/record-demo.mjs"><code>scripts/record-demo.mjs</code></a>.</sub>
 
 </div>
 
@@ -51,7 +40,7 @@ Hosts create an event and share a single link — guests open it, identify thems
 
 > Built as a portfolio project demonstrating modern full-stack development with Next.js App Router,
 > Supabase, TypeScript, and production-grade practices including i18n, accessibility, Row Level
-> Security, and end-to-end tests.
+> Security, offline support, and end-to-end tests.
 
 ---
 
@@ -86,6 +75,7 @@ Hosts create an event and share a single link — guests open it, identify thems
 | Styling    | Tailwind CSS v4 + shadcn/ui (Maia)            |
 | Forms      | React Hook Form + Zod v4                      |
 | i18n       | next-intl (pt-BR + en)                        |
+| PWA        | Serwist (service worker + web app manifest)   |
 | Testing    | Vitest + Testing Library + Playwright         |
 | Deployment | Vercel                                        |
 
@@ -114,6 +104,7 @@ E -->|Mutates data| B
 - **RLS as the security layer** — Row Level Security policies on all Supabase tables enforce access control at the database level, not just the application layer.
 - **Guest identity without auth** — guests are identified by a signed HMAC cookie containing their `guestId`, avoiding forced account creation while preventing impersonation.
 - **TanStack Query for Realtime only** — all initial data uses RSC. TanStack Query manages the client cache invalidated by Supabase Realtime subscriptions.
+- **Caching strategy per route shape** — the service worker precaches the shell, serves immutable assets `CacheFirst`, and falls back to `NetworkFirst` with a 5s timeout for event pages, so a guest at a churrasco with bad signal still sees the list instead of an error.
 
 ---
 
@@ -219,18 +210,18 @@ All tables have Row Level Security enabled. See `supabase/migrations/` for full 
 
 This project addresses the [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 
-| #   | Risk                      | Mitigation                                        |
-| --- | ------------------------- | ------------------------------------------------- |
-| A01 | Broken Access Control     | RLS on all tables; `host_id` set server-side      |
-| A02 | Cryptographic Failures    | Supabase Auth handles password hashing            |
-| A03 | Injection                 | Zod validation + Supabase parameterized queries   |
-| A04 | Insecure Design           | Guest cookie signed with HMAC-SHA256              |
-| A05 | Security Misconfiguration | CSP, X-Frame-Options, Referrer-Policy headers     |
-| A06 | Vulnerable Components     | `npm audit` in CI + Dependabot                    |
-| A07 | Auth Failures             | Min 8-char password; Supabase rate limiting       |
-| A08 | Software Integrity        | Dependabot + `npm audit --audit-level=high` in CI |
-| A09 | Logging Failures          | Supabase logs + Vercel log drain                  |
-| A10 | SSRF                      | Domain whitelist for user-supplied image URLs     |
+| #   | Risk                      | Mitigation                                         |
+| --- | ------------------------- | -------------------------------------------------- |
+| A01 | Broken Access Control     | RLS on all tables; `host_id` set server-side       |
+| A02 | Cryptographic Failures    | Supabase Auth handles password hashing             |
+| A03 | Injection                 | Zod validation + Supabase parameterized queries    |
+| A04 | Insecure Design           | Guest cookie signed with HMAC-SHA256               |
+| A05 | Security Misconfiguration | CSP, X-Frame-Options, Referrer-Policy headers      |
+| A06 | Vulnerable Components     | `pnpm audit` in CI + Dependabot                    |
+| A07 | Auth Failures             | Min 8-char password; Supabase rate limiting        |
+| A08 | Software Integrity        | Dependabot + `pnpm audit --audit-level=high` in CI |
+| A09 | Logging Failures          | Supabase logs + Vercel log drain                   |
+| A10 | SSRF                      | Domain whitelist for user-supplied image URLs      |
 
 ---
 
@@ -296,10 +287,10 @@ Add the same variables from `.env.local.example` in the Vercel dashboard under
 - [x] **Phase 1: Core** — auth, event creation, guest flow, shareable link
 - [x] **Phase 2: Collaboration** — items board, cost splitting, realtime
 - [x] **Phase 3: Quality** — i18n (pt-BR + en), accessibility, RLS, unit + E2E tests
+- [x] **Phase 4: Offline** — installable PWA, precached shell, cached event pages
 
 ### Roadmap
 
-- [ ] PWA — installable app with offline support
 - [ ] SEO — sitemap, structured data, Open Graph images
 - [ ] Motion — transitions on the items board and RSVP states
 
