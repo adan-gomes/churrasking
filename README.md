@@ -275,7 +275,12 @@ pnpm test:e2e --ui
 
 ## Deployment
 
-Deployed on [Vercel](https://vercel.com) with automatic preview deployments on every push.
+Built for [Vercel](https://vercel.com) — one-click deploy below, or run locally with the steps
+in [Getting Started](#getting-started).
+
+> No public instance is running right now: the Supabase free tier allows two active projects
+> per organization, and both slots are in use by other work. Bringing it back up takes a
+> Supabase project and the environment variables below.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/adan-gomes/churrasking)
 
