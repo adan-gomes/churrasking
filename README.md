@@ -8,6 +8,21 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+<!--
+  PENDENTE — os dois itens de maior impacto para quem avalia este repo:
+
+  1. LINK DA DEMO. Um recrutador quer clicar e ver funcionando, não clonar.
+     Se estiver no ar, adicionar aqui:
+     **[Ver demo ao vivo →](https://SUA-URL)**
+
+  2. SCREENSHOTS ou um GIF do fluxo (criar evento → compartilhar link →
+     convidado confirma → item reivindicado). Projeto de UI sem imagem
+     obriga o avaliador a imaginar, e ele não vai.
+
+  Deixados como comentário de propósito: link quebrado ou imagem faltando
+  num README público é pior que a ausência da seção.
+-->
+
 </div>
 
 ---
@@ -25,7 +40,7 @@
 - [Accessibility](#accessibility)
 - [Testing](#testing)
 - [Deployment](#deployment)
-- [Roadmap](#roadmap)
+- [Status](#status)
 
 ---
 
@@ -35,7 +50,8 @@ ChurrasKing is a full-stack web application for organizing brazilian barbecue (c
 Hosts create an event and share a single link — guests open it, identify themselves with name and email, confirm attendance, and claim items to bring. No app download required.
 
 > Built as a portfolio project demonstrating modern full-stack development with Next.js App Router,
-> Supabase, TypeScript, and production-grade practices including i18n, PWA, accessibility, and security.
+> Supabase, TypeScript, and production-grade practices including i18n, accessibility, Row Level
+> Security, and end-to-end tests.
 
 ---
 
@@ -70,7 +86,6 @@ Hosts create an event and share a single link — guests open it, identify thems
 | Styling    | Tailwind CSS v4 + shadcn/ui (Maia)            |
 | Forms      | React Hook Form + Zod v4                      |
 | i18n       | next-intl (pt-BR + en)                        |
-| PWA        | next-pwa + Workbox                            |
 | Testing    | Vitest + Testing Library + Playwright         |
 | Deployment | Vercel                                        |
 
@@ -113,7 +128,7 @@ E -->|Mutates data| B
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/AdanPGomes/churrasking.git
+git clone https://github.com/adan-gomes/churrasking.git
 cd churrasking
 pnpm install
 ```
@@ -182,7 +197,7 @@ src/
 ├── types/                   # Shared TypeScript types
 └── messages/                # i18n strings
     ├── en.json
-    └── pt.json
+    └── pt-BR.json
 ```
 
 ---
@@ -262,7 +277,7 @@ pnpm test:e2e --ui
 
 Deployed on [Vercel](https://vercel.com) with automatic preview deployments on every push.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/AdanPGomes/churrasking)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/adan-gomes/churrasking)
 
 ### Environment variables on Vercel
 
@@ -271,11 +286,17 @@ Add the same variables from `.env.local.example` in the Vercel dashboard under
 
 ---
 
-## Roadmap
+## Status
 
-- [ ] Phase 1: Core — auth, event creation, guest flow, shareable link
-- [ ] Phase 2: Collaboration — items board, cost splitting, realtime
-- [ ] Phase 3: Polish — i18n, PWA, SEO, animations, E2E tests
+- [x] **Phase 1: Core** — auth, event creation, guest flow, shareable link
+- [x] **Phase 2: Collaboration** — items board, cost splitting, realtime
+- [x] **Phase 3: Quality** — i18n (pt-BR + en), accessibility, RLS, unit + E2E tests
+
+### Roadmap
+
+- [ ] PWA — installable app with offline support
+- [ ] SEO — sitemap, structured data, Open Graph images
+- [ ] Motion — transitions on the items board and RSVP states
 
 ---
 
@@ -317,5 +338,5 @@ NEXT_PUBLIC_GA_ID=              # Google Analytics
 ---
 
 <div align="center">
-  Made with 🔥 by <a href="https://github.com/AdanPGomes">Adan Gomes</a>
+  Made with 🔥 by <a href="https://github.com/adan-gomes">Adan Gomes</a>
 </div>
