@@ -8,6 +8,10 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+<img src="docs/demo.gif" alt="Host creates an event, adds items and shares the link; a guest opens it, confirms attendance and claims an item; the host view updates with the guest list and the per-person cost" width="860" />
+
+<sub>Create the event → add items → share one link → guests RSVP and claim what they'll bring → the per-person split updates. Recorded end to end against a local stack by <a href="scripts/record-demo.mjs"><code>scripts/record-demo.mjs</code></a>.</sub>
+
 </div>
 
 ---
@@ -25,7 +29,7 @@
 - [Accessibility](#accessibility)
 - [Testing](#testing)
 - [Deployment](#deployment)
-- [Roadmap](#roadmap)
+- [Status](#status)
 
 ---
 
@@ -35,7 +39,8 @@ ChurrasKing is a full-stack web application for organizing brazilian barbecue (c
 Hosts create an event and share a single link — guests open it, identify themselves with name and email, confirm attendance, and claim items to bring. No app download required.
 
 > Built as a portfolio project demonstrating modern full-stack development with Next.js App Router,
-> Supabase, TypeScript, and production-grade practices including i18n, PWA, accessibility, and security.
+> Supabase, TypeScript, and production-grade practices including i18n, accessibility, Row Level
+> Security, offline support, and end-to-end tests.
 
 ---
 
@@ -49,12 +54,18 @@ Hosts create an event and share a single link — guests open it, identify thems
 - View guest list with RSVP status in real time
 - See cost summary and per-person breakdown
 
+<img src="docs/host.png" alt="Host view of an event: two guests confirmed, four items listed with estimated costs, two of them already claimed by name, and a cost summary showing R$ 375,00 total with R$ 300,00 covered and R$ 187,50 per person" width="860" />
+
 ### Guest (no account required)
 
 - Access event via shared link
 - Confirm or decline attendance
 - Claim items to bring
 - See live updates as other guests respond
+
+<img src="docs/guest.png" alt="Guest view reached by link with no account: three guests confirmed, R$ 125,00 per person, an RSVP control showing the guest's own answer, and the attendee list marking which one is the current guest" width="860" />
+
+<sub>Both captured against a local stack by <a href="scripts/capture-screenshots.mjs"><code>scripts/capture-screenshots.mjs</code></a>, with synthetic data (RFC 2606 <code>example.com</code>). Re-run it after a UI change instead of retaking them by hand.</sub>
 
 ---
 
@@ -70,7 +81,7 @@ Hosts create an event and share a single link — guests open it, identify thems
 | Styling    | Tailwind CSS v4 + shadcn/ui (Maia)            |
 | Forms      | React Hook Form + Zod v4                      |
 | i18n       | next-intl (pt-BR + en)                        |
-| PWA        | next-pwa + Workbox                            |
+| PWA        | Serwist (service worker + web app manifest)   |
 | Testing    | Vitest + Testing Library + Playwright         |
 | Deployment | Vercel                                        |
 
@@ -99,6 +110,7 @@ E -->|Mutates data| B
 - **RLS as the security layer** — Row Level Security policies on all Supabase tables enforce access control at the database level, not just the application layer.
 - **Guest identity without auth** — guests are identified by a signed HMAC cookie containing their `guestId`, avoiding forced account creation while preventing impersonation.
 - **TanStack Query for Realtime only** — all initial data uses RSC. TanStack Query manages the client cache invalidated by Supabase Realtime subscriptions.
+- **Caching strategy per route shape** — the service worker precaches the shell, serves immutable assets `CacheFirst`, and falls back to `NetworkFirst` with a 5s timeout for event pages, so a guest at a churrasco with bad signal still sees the list instead of an error.
 
 ---
 
@@ -113,7 +125,7 @@ E -->|Mutates data| B
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/AdanPGomes/churrasking.git
+git clone https://github.com/adan-gomes/churrasking.git
 cd churrasking
 pnpm install
 ```
@@ -182,7 +194,7 @@ src/
 ├── types/                   # Shared TypeScript types
 └── messages/                # i18n strings
     ├── en.json
-    └── pt.json
+    └── pt-BR.json
 ```
 
 ---
@@ -204,18 +216,18 @@ All tables have Row Level Security enabled. See `supabase/migrations/` for full 
 
 This project addresses the [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 
-| #   | Risk                      | Mitigation                                        |
-| --- | ------------------------- | ------------------------------------------------- |
-| A01 | Broken Access Control     | RLS on all tables; `host_id` set server-side      |
-| A02 | Cryptographic Failures    | Supabase Auth handles password hashing            |
-| A03 | Injection                 | Zod validation + Supabase parameterized queries   |
-| A04 | Insecure Design           | Guest cookie signed with HMAC-SHA256              |
-| A05 | Security Misconfiguration | CSP, X-Frame-Options, Referrer-Policy headers     |
-| A06 | Vulnerable Components     | `npm audit` in CI + Dependabot                    |
-| A07 | Auth Failures             | Min 8-char password; Supabase rate limiting       |
-| A08 | Software Integrity        | Dependabot + `npm audit --audit-level=high` in CI |
-| A09 | Logging Failures          | Supabase logs + Vercel log drain                  |
-| A10 | SSRF                      | Domain whitelist for user-supplied image URLs     |
+| #   | Risk                      | Mitigation                                         |
+| --- | ------------------------- | -------------------------------------------------- |
+| A01 | Broken Access Control     | RLS on all tables; `host_id` set server-side       |
+| A02 | Cryptographic Failures    | Supabase Auth handles password hashing             |
+| A03 | Injection                 | Zod validation + Supabase parameterized queries    |
+| A04 | Insecure Design           | Guest cookie signed with HMAC-SHA256               |
+| A05 | Security Misconfiguration | CSP, X-Frame-Options, Referrer-Policy headers      |
+| A06 | Vulnerable Components     | `pnpm audit` in CI + Dependabot                    |
+| A07 | Auth Failures             | Min 8-char password; Supabase rate limiting        |
+| A08 | Software Integrity        | Dependabot + `pnpm audit --audit-level=high` in CI |
+| A09 | Logging Failures          | Supabase logs + Vercel log drain                   |
+| A10 | SSRF                      | Domain whitelist for user-supplied image URLs      |
 
 ---
 
@@ -260,9 +272,14 @@ pnpm test:e2e --ui
 
 ## Deployment
 
-Deployed on [Vercel](https://vercel.com) with automatic preview deployments on every push.
+Built for [Vercel](https://vercel.com) — one-click deploy below, or run locally with the steps
+in [Getting Started](#getting-started).
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/AdanPGomes/churrasking)
+> No public instance is running right now: the Supabase free tier allows two active projects
+> per organization, and both slots are in use by other work. Bringing it back up takes a
+> Supabase project and the environment variables below.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/adan-gomes/churrasking)
 
 ### Environment variables on Vercel
 
@@ -271,11 +288,17 @@ Add the same variables from `.env.local.example` in the Vercel dashboard under
 
 ---
 
-## Roadmap
+## Status
 
-- [ ] Phase 1: Core — auth, event creation, guest flow, shareable link
-- [ ] Phase 2: Collaboration — items board, cost splitting, realtime
-- [ ] Phase 3: Polish — i18n, PWA, SEO, animations, E2E tests
+- [x] **Phase 1: Core** — auth, event creation, guest flow, shareable link
+- [x] **Phase 2: Collaboration** — items board, cost splitting, realtime
+- [x] **Phase 3: Quality** — i18n (pt-BR + en), accessibility, RLS, unit + E2E tests
+- [x] **Phase 4: Offline** — installable PWA, precached shell, cached event pages
+
+### Roadmap
+
+- [ ] SEO — sitemap, structured data, Open Graph images
+- [ ] Motion — transitions on the items board and RSVP states
 
 ---
 
@@ -317,5 +340,5 @@ NEXT_PUBLIC_GA_ID=              # Google Analytics
 ---
 
 <div align="center">
-  Made with 🔥 by <a href="https://github.com/AdanPGomes">Adan Gomes</a>
+  Made with 🔥 by <a href="https://github.com/adan-gomes">Adan Gomes</a>
 </div>
