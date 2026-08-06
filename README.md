@@ -54,12 +54,18 @@ Hosts create an event and share a single link — guests open it, identify thems
 - View guest list with RSVP status in real time
 - See cost summary and per-person breakdown
 
+<img src="docs/host.png" alt="Host view of an event: two guests confirmed, four items listed with estimated costs, two of them already claimed by name, and a cost summary showing R$ 375,00 total with R$ 300,00 covered and R$ 187,50 per person" width="860" />
+
 ### Guest (no account required)
 
 - Access event via shared link
 - Confirm or decline attendance
 - Claim items to bring
 - See live updates as other guests respond
+
+<img src="docs/guest.png" alt="Guest view reached by link with no account: three guests confirmed, R$ 125,00 per person, an RSVP control showing the guest's own answer, and the attendee list marking which one is the current guest" width="860" />
+
+<sub>Both captured against a local stack by <a href="scripts/capture-screenshots.mjs"><code>scripts/capture-screenshots.mjs</code></a>, with synthetic data (RFC 2606 <code>example.com</code>). Re-run it after a UI change instead of retaking them by hand.</sub>
 
 ---
 
