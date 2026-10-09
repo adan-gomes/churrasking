@@ -1,1 +1,5 @@
+# Hook nativo do operations: varredura de segredos em todo push e evidência de
+# verificação no push direto para a base. Só age onde o operations está instalado.
+OPS_PRE_PUSH="$HOME/development/santangelogomes/operations-installed/claude/hooks/git/pre-push"
+if [ -x "$OPS_PRE_PUSH" ]; then "$OPS_PRE_PUSH" "$@" || exit $?; fi
 pnpm typecheck
